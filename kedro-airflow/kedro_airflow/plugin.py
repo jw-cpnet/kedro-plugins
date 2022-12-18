@@ -57,7 +57,8 @@ def create(
     template = jinja_env.get_template(jinja_file.name)
 
     package_name = metadata.package_name
-    dag_filename = f"{package_name}_dag.py"
+    dag_name = f"{package_name}_{pipeline_name.strip('_')}"
+    dag_filename = f"{dag_name}_dag.py"
 
     target_path = Path(target_path)
     target_path = target_path / dag_filename
@@ -72,12 +73,13 @@ def create(
             dependencies[parent].append(node)
 
     template.stream(
-        dag_name=package_name,
+        dag_name=dag_name,
         dependencies=dependencies,
         env=env,
         pipeline_name=pipeline_name,
         package_name=package_name,
         pipeline=pipeline,
+        env_vars=env_vars,
     ).dump(str(target_path))
 
     secho("")
