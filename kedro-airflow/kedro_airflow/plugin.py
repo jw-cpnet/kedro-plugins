@@ -41,6 +41,7 @@ def airflow_commands():
     ),
     default=Path(__file__).parent / "airflow_dag_template.j2",
 )
+@click.option("-E", "--envs", "env_variables")
 @click.pass_obj
 def create(
     metadata: ProjectMetadata,
@@ -48,6 +49,7 @@ def create(
     env,
     target_path,
     jinja_file,
+    env_variables,
 ):  # pylint: disable=too-many-locals,too-many-arguments
     """Create an Airflow DAG for a project"""
     jinja_file = Path(jinja_file).resolve()
@@ -71,6 +73,12 @@ def create(
     for node, parent_nodes in pipeline.node_dependencies.items():
         for parent in parent_nodes:
             dependencies[parent].append(node)
+
+    env_vars = dict()
+    if env_variables:
+        for assingment in env_variables.split(";"):
+            varname, val = assingment.split("=")
+            env_vars[varname] = val
 
     template.stream(
         dag_name=dag_name,
