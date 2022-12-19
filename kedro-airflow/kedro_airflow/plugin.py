@@ -42,6 +42,12 @@ def airflow_commands():
     default=Path(__file__).parent / "airflow_dag_template.j2",
 )
 @click.option("-E", "--envs", "env_variables")
+@click.option(
+    "-w",
+    "--working-directory",
+    "working_dir",
+    type=click.Path(writable=True, resolve_path=True, file_okay=False),
+)
 @click.pass_obj
 def create(
     metadata: ProjectMetadata,
@@ -50,6 +56,7 @@ def create(
     target_path,
     jinja_file,
     env_variables,
+    working_dir,
 ):  # pylint: disable=too-many-locals,too-many-arguments
     """Create an Airflow DAG for a project"""
     jinja_file = Path(jinja_file).resolve()
@@ -88,6 +95,7 @@ def create(
         package_name=package_name,
         pipeline=pipeline,
         env_vars=env_vars,
+        working_dir=working_dir,
     ).dump(str(target_path))
 
     secho("")
