@@ -29,7 +29,13 @@ def identity(arg):
             "__default__",
             ["airflow", "create", "-E", "var1=value1"],
         ),
-        # Test execution with the
+        # Test execution with multiple env variables
+        (
+            "hello_world_default_dag",
+            "__default__",
+            ["airflow", "create", "-E", "var1=value1;var2=value2"],
+        ),
+        # Test execution with the working directory option
         (
             "hello_world_default_dag",
             "__default__",
@@ -63,6 +69,8 @@ def test_create_airflow_dag(
     assert expected_airflow_dag in dag_code
     if "-E" in command:
         assert expected_environment_settings in dag_code
+        if "var1=value1;var2=value2" in command:
+            assert 'os.environ["var2"] = value2' in dag_code
     if "-w" in command:
         assert expected_working_dir_settings in dag_code
     else:

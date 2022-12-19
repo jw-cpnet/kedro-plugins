@@ -13,9 +13,9 @@ from datetime import datetime, timedelta
 from kedro.framework.session import KedroSession
 from kedro.framework.project import configure_project
 
-{% for varname, val in env_vars.items() -%}
+{%- for varname, val in env_vars.items() %}
 os.environ["{{ varname }}"] = {{ val }}
-{%- endfor %}
+{% endfor -%}
 
 {% if working_dir %}
 # change the working directory
