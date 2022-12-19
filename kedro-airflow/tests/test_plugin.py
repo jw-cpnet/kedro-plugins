@@ -41,6 +41,12 @@ def identity(arg):
             "__default__",
             ["airflow", "create", "-w", "/opt/airflow/kedro/proj1"],
         ),
+        # Test execution with the id option
+        (
+            "hello_world_default_id1_dag",
+            "__default__",
+            ["airflow", "create", "-i", "id1"],
+        ),
     ],
 )
 def test_create_airflow_dag(
@@ -63,15 +69,19 @@ def test_create_airflow_dag(
 
     expected_airflow_dag = 'tasks["node0"] >> tasks["node1"]'
     expected_environment_settings = 'os.environ["var1"] = value1'
+    expected_another_environment_settings = 'os.environ["var2"] = value2'
     expected_working_dir_settings = "os.chdir('/opt/airflow/kedro/proj1')"
+    expected_dag_name = '"hello-world-default-id1",'
     with open(dag_file, "r", encoding="utf-8") as f:
         dag_code = [line.strip() for line in f.read().splitlines()]
     assert expected_airflow_dag in dag_code
     if "-E" in command:
         assert expected_environment_settings in dag_code
         if "var1=value1;var2=value2" in command:
-            assert 'os.environ["var2"] = value2' in dag_code
+            assert expected_another_environment_settings in dag_code
     if "-w" in command:
         assert expected_working_dir_settings in dag_code
     else:
         assert expected_working_dir_settings not in dag_code
+    if "-i" in command:
+        assert expected_dag_name in dag_code

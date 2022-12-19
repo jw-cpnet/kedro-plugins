@@ -42,6 +42,7 @@ def airflow_commands():
     default=Path(__file__).parent / "airflow_dag_template.j2",
 )
 @click.option("-E", "--envs", "env_variables")
+@click.option("-i", "--custom-id", "id_", type=str, default="")
 @click.option(
     "-w",
     "--working-directory",
@@ -56,6 +57,7 @@ def create(
     target_path,
     jinja_file,
     env_variables,
+    id_,
     working_dir,
 ):  # pylint: disable=too-many-locals,too-many-arguments
     """Create an Airflow DAG for a project"""
@@ -66,7 +68,9 @@ def create(
     template = jinja_env.get_template(jinja_file.name)
 
     package_name = metadata.package_name
-    dag_name = f"{package_name}_{pipeline_name.strip('_')}"
+    if id_ != "":
+        id_ = "_" + id_.lstrip("_")
+    dag_name = f"{package_name}_{pipeline_name.strip('_')}{id_}"
     dag_filename = f"{dag_name}_dag.py"
 
     target_path = Path(target_path)
