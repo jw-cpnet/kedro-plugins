@@ -68,8 +68,8 @@ def test_create_airflow_dag(
     assert dag_file.exists()
 
     expected_airflow_dag = 'tasks["node0"] >> tasks["node1"]'
-    expected_environment_settings = 'os.environ["var1"] = value1'
-    expected_another_environment_settings = 'os.environ["var2"] = value2'
+    expected_environment_settings = 'os.environ["var1"] = "value1"'
+    expected_another_environment_settings = 'os.environ["var2"] = "value2"'
     expected_working_dir_settings = "os.chdir('/opt/airflow/kedro/proj1')"
     expected_dag_name = '"hello-world-default-id1",'
     with open(dag_file, "r", encoding="utf-8") as f:
