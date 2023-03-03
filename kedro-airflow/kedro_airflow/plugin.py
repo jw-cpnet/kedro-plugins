@@ -88,7 +88,7 @@ def create(
     env_vars = dict()
     if env_variables:
         for assingment in env_variables.split(";"):
-            varname, val = assingment.split("=")
+            varname, val = assingment.split("=", 1)
             env_vars[varname] = val
 
     template.stream(
