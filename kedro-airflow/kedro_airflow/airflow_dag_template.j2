@@ -60,6 +60,7 @@ package_name = "{{ package_name }}"
 default_args = {
     'owner': 'airflow',
     'depends_on_past': False,
+    'email': ['jian.wang@cpnet.io'],
     'email_on_failure': True,
     'email_on_retry': True,
     'retries': 0,
